@@ -14,7 +14,7 @@ inputs:
       Token used to resolve dependencies from GitHub Packages. Pass the calling workflow's
       PACKAGES_READ_TOKEN secret with its GITHUB_TOKEN as the fallback — secrets are not readable
       inside a composite action, so they can only arrive as an input. Leave empty for services
-      that resolve everything from Maven Central (adsu-sso).
+      that resolve everything from Maven Central.
       (Written without expression syntax on purpose: an expression inside a manifest is evaluated
       even in a description, and the secrets context does not exist inside an action — such a
       manifest fails at load time for every caller, not for the kit itself.)
@@ -48,7 +48,7 @@ inputs:
       wrapper is committed and is executed by every build.
 
       Set it FALSE on a production host. The check fetches the checksum list over the network and
-      has no timeout of its own — on adsu-ai it hung for 24.8 minutes and the job died on
+      has no timeout of its own — on ai-backend it hung for 24.8 minutes and the job died on
       timeout-minutes without Gradle ever starting. It also adds nothing there: a deploy is
       triggered by a successful CI run on the same commit, so that wrapper has already been
       validated on a GitHub-hosted runner with reliable egress. Repeating it on the production
@@ -104,7 +104,7 @@ runs:
       run: |
         # Unquoted expansion gives word splitting, which is what we want — but it also gives
         # pathname expansion, which we very much do not. A Gradle test filter such as
-        #   --tests ru.adygnet.team.architecture.*
+        #   --tests com.example.architecture.*
         # would expand against the working directory the moment any file happens to match, and
         # the build would silently run a DIFFERENT filter than the one written down. Verified
         # under bash: with a matching file present the pattern is replaced by the file name;

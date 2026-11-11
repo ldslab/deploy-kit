@@ -1,7 +1,8 @@
 # deploy-kit
 
-One implementation of the blue-green deploy shared by five backends — adsu-sso, adsu-team,
-adsu-ai, status-monitor and adsu-student-core — instead of five copies that drift apart.
+One implementation of the blue-green deploy shared by five backends — the SSO server,
+team-backend, ai-backend, status-monitor and student-backend — instead of five copies that drift
+apart.
 
 The copies did drift. Only team-backend ever received the fixes that matter: reading the active
 colour from the live Caddy upstream rather than the stale `active` file, gating on the readiness
@@ -36,12 +37,12 @@ is the whole difference between the five services.
 
 ```yaml
 - uses: actions/checkout@v4
-- uses: LDS-ADSU/deploy-kit/lockstep-check@v1.0.0   # only where a shared kernel is pinned
+- uses: ldslab/deploy-kit/lockstep-check@v1.0.0   # only where a shared kernel is pinned
   with:
-    artifact: ru.adygnet:studlife-core
-    repository: LDS-ADSU/studlife-core
+    artifact: com.example:shared-kernel
+    repository: example-org/shared-kernel
     token: ${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}
-- uses: LDS-ADSU/deploy-kit/gradle-build@v1.0.0
+- uses: ldslab/deploy-kit/gradle-build@v1.0.0
   with:
     gradle-args: build
     packages-token: ${{ secrets.PACKAGES_READ_TOKEN || secrets.GITHUB_TOKEN }}
@@ -53,13 +54,13 @@ is the whole difference between the five services.
 ```yaml
 - uses: actions/checkout@v4
   with: { ref: "${{ github.event.workflow_run.head_sha || github.sha }}" }
-- uses: LDS-ADSU/deploy-kit/gradle-build@v1.0.0
+- uses: ldslab/deploy-kit/gradle-build@v1.0.0
   with:
     gradle-args: clean bootJar -x test
     setup-java: 'false'        # the JDK that runs the service is the one to build with
     cache: 'false'             # ~/.gradle already survives on a persistent runner
     validate-wrapper: 'false'  # already validated by the CI run that triggered this deploy
-- uses: LDS-ADSU/deploy-kit/blue-green@v1.0.0
+- uses: ldslab/deploy-kit/blue-green@v1.0.0
   with:
     profile: deploy/service.conf
     release-id: ${{ github.event.workflow_run.head_sha || github.sha }}
@@ -95,7 +96,7 @@ jobs:
     runs-on: [self-hosted, Linux]
     steps:
       - uses: actions/checkout@v4
-      - uses: LDS-ADSU/deploy-kit/rollback@v1.0.5
+      - uses: ldslab/deploy-kit/rollback@v1.0.5
         with:
           profile: deploy/service.conf
           confirm: ${{ inputs.confirm }}
