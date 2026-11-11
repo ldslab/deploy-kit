@@ -5,14 +5,14 @@ description: >-
 
   Two services that share a database schema through a common kernel must run the SAME kernel
   version: diverging versions mean two implementations of the same business rules over one set of
-  tables. That has already happened between asu-api and asu-team, and nothing caught it.
+  tables. That has already happened between student-backend and team-backend, and nothing caught it.
 
 inputs:
   artifact:
-    description: 'Maven coordinates without the version, e.g. ru.adygnet:studlife-core'
+    description: 'Maven coordinates without the version, e.g. com.example:shared-kernel'
     required: true
   repository:
-    description: 'owner/repo that publishes the package, e.g. LDS-ADSU/studlife-core'
+    description: 'owner/repo that publishes the package, e.g. example-org/shared-kernel'
     required: true
   token:
     description: >-
@@ -43,7 +43,7 @@ runs:
         name="${ARTIFACT##*:}"
         group_path="${group//./\/}"
         # The coordinates go into a regex, so their dots must be literal: an unescaped
-        # ru.adygnet would also match ruXadygnet and quietly read the wrong pin.
+        # com.example would also match comXexample and quietly read the wrong pin.
         pattern="$(printf '%s' "$ARTIFACT" | sed 's/\./\\./g')"
 
         pinned=$(grep -oE "${pattern}:[0-9]+\.[0-9]+\.[0-9]+" "$BUILD_FILE" | head -1 | sed 's/.*://')
