@@ -12,7 +12,7 @@ inputs:
     description: 'Maven coordinates without the version, e.g. ru.adygnet:studlife-core'
     required: true
   repository:
-    description: 'owner/repo that publishes the package, e.g. LDS-ADSU/studlife-core'
+    description: 'owner/repo that publishes the package, e.g. ldslab/studlife-core'
     required: true
   token:
     description: >-
